@@ -12,28 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "micro-integrator.fullname" . }}-services
+  name: {{ include "micro-integrator.fullname" . }}-management-ingress
   namespace : {{ .Release.Namespace }}
-{{- if .Values.wso2.ingress.services.annotations }}
+{{- if .Values.wso2.ingress.management.annotations }}
   annotations:
-{{ toYaml .Values.wso2.ingress.services.annotations | indent 4 }}
+{{ toYaml .Values.wso2.ingress.management.annotations | indent 4 }}
 {{- end }}
 spec:
   tls:
     - hosts:
-        - {{ .Values.wso2.ingress.services.hostname | quote }}
+        - {{ .Values.wso2.ingress.management.hostname  | quote }}
   rules:
-    - host: {{ .Values.wso2.ingress.services.hostname | quote }}
+    - host: {{ .Values.wso2.ingress.management.hostname | quote }}
       http:
         paths:
           - path: /
+            pathType: ImplementationSpecific
             backend:
-              serviceName: {{ include "micro-integrator.fullname" . }}
-              servicePort: 8290
-          - path: /healthz
-            backend:
-              serviceName: {{ include "micro-integrator.fullname" . }}
-              servicePort: 9201
+              service:
+                name: {{ include "micro-integrator.fullname" . }}
+                port:
+                  number: 9164
