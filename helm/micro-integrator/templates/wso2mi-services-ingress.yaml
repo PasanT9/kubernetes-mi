@@ -30,14 +30,14 @@ spec:
       http:
         paths:
           - path: /
-            pathType: ImplementationSpecific
+            pathType: Prefix
             backend:
               service:
                 name: {{ include "micro-integrator.fullname" . }}
                 port:
                   number: 8290
           - path: /healthz
-            pathType: ImplementationSpecific
+            pathType: Prefix
             backend:
               service:
                 name: {{ include "micro-integrator.fullname" . }}
